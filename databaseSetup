@@ -15,30 +15,8 @@ users_table = Table("users", metadata, autoload_with=engine)
 sales_table = Table("sales", metadata, autoload_with=engine)
 finance_table = Table("finance", metadata, autoload_with=engine)
 
-# ORM için Base ve Session ayarları
-Base = declarative_base()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# ORM modelleri
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
-    email = Column(String(100), unique=True, index=True, nullable=False)
-    sales = relationship("Sale", back_populates="user")
-
-class Sale(Base):
-    __tablename__ = 'sales'
-    id = Column(Integer, primary_key=True, index=True)
-    amount = Column(Float, nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship("User", back_populates="sales")
-
-class Finance(Base):
-    __tablename__ = 'finance'
-    id = Column(Integer, primary_key=True, index=True)
-    revenue = Column(Float, nullable=False)
-    expense = Column(Float, nullable=False)
 
 # Veritabanı bağlantı hatalarını kontrol eden yardımcı bir işlev
 def test_database_connection():
