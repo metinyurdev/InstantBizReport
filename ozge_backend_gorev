@@ -1,0 +1,29 @@
+@router.get("/sales/plot")
+def plot_sales(current_user: dict = Depends(get_current_user), db=Depends(get_db)):
+    query = select(sales_table)
+    results = db.execute(query).fetchall()
+
+    data = pd.DataFrame(results, columns=['id', 'product', 'quantity', 'sale_date'])
+    data['quantity'] = pd.to_numeric(data['quantity'], errors='coerce')
+    data.dropna(subset=['quantity'], inplace=True)
+
+    if data['quantity'].isnull().all():
+        return {"error": "No numeric data to plot"}
+
+    if data.empty:
+        return {"error": "No data available to plot"}
+    if not data['quantity'].dtype.kind in 'fi':
+        return {"error": "Quantity field is not numeric"}
+
+    plt.figure(figsize=(8, 6))
+    data.groupby("product")['quantity'].sum().plot(kind="bar", color=["blue", "orange"])
+    plt.title("Sales Overview")
+    plt.xlabel("Product")
+    plt.ylabel("Total Quantity Sold")
+    plt.tight_layout()
+
+    buf = BytesIO()
+    plt.savefig(buf, format="png")
+    buf.seek(0)
+
+    return StreamingResponse(buf, media_type="image/png")
