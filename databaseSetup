@@ -1,0 +1,30 @@
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Float, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship
+import os
+
+# DATABASE_URL değişkenini oluştur
+DATABASE_URL = "mysql+pymysql://username:password@localhost/dbname"
+
+# Veritabanına bağlantı kurmak için create_engine'i kullan
+engine = create_engine(DATABASE_URL, echo=True, future=True)
+
+# MetaData nesnesi ve tabloların otomatik yüklenmesi
+metadata = MetaData()
+users_table = Table("users", metadata, autoload_with=engine)
+sales_table = Table("sales", metadata, autoload_with=engine)
+finance_table = Table("finance", metadata, autoload_with=engine)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+# Veritabanı bağlantı hatalarını kontrol eden yardımcı bir işlev
+def test_database_connection():
+    try:
+        with engine.connect() as connection:
+            print("Veritabanı bağlantısı başarılı!")
+    except Exception as e:
+        print(f"Veritabanı bağlantı hatası: {e}")
+
+# Bağlantıyı test et
+test_database_connection()
