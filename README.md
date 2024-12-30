@@ -1,2 +1,2 @@
 # InstantBizReport
-Mobil Proje Geliştirme Ortamı
+Proje Geliştirme Ortamı
