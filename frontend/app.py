@@ -1,5 +1,3 @@
-Fidan-app.py
-
 import streamlit as st
 from pages.login import show_login
 from pages.dashboard import show_dashboard

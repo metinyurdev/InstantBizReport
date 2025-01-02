@@ -1,5 +1,3 @@
-Akif-finance.py
-
 import streamlit as st
 import requests
 import pandas as pd
@@ -54,7 +52,7 @@ def save_dataframe_as_pdf(df, filename):
     # Başlık ekleme (Arial yazı tipi kullan)
     title_style = styles['Title']
     title_style.fontName = 'Arial'  # Arial yazı tipi
-    title = Paragraph("Finance Data", title_style)
+    title = Paragraph("Personals Data", title_style)
     elements.append(title)
 
     # DataFrame'i tablo olarak ekleme
@@ -75,19 +73,19 @@ def save_dataframe_as_pdf(df, filename):
     # PDF'i oluşturma
     pdf.build(elements)
 
-# Finance sayfası
-def show_finance():
+# Personals sayfası
+def show_personals():
     inject_custom_css()  # Özel CSS ekle
-    st.title("Finance Page")  # Sayfa başlığı
-    st.write("You can see finance data in different ways.")
+    st.title("Personals Page")
+    st.write("You can see personals data in different ways.")
 
-    # Finance verilerini API'den çek
-    response = requests.get(f"{API_URL}/finance", headers={"Authorization": f"Bearer {st.session_state.token}"})
+    # Personals verilerini API'den çek
+    response = requests.get(f"{API_URL}/personals", headers={"Authorization": f"Bearer {st.session_state.token}"})
     if response.status_code == 200:
-        finance_data = response.json().get("finance", [])  # "finance" anahtarındaki verileri al
-        if isinstance(finance_data, list) and len(finance_data) > 0:
+        personals_data = response.json().get("personals", [])  # "personals" anahtarındaki verileri al
+        if isinstance(personals_data, list) and len(personals_data) > 0:
             # Verileri pandas DataFrame'e dönüştür
-            df = pd.DataFrame(finance_data)
+            df = pd.DataFrame(personals_data)
 
             # Tablo Gösterimi
             st.subheader("Show Table")
@@ -98,29 +96,33 @@ def show_finance():
             st.dataframe(df)
 
             # Görselleştirme Seçenekleri
-            st.subheader("Show Graph")
+            st.subheader("Visualize Data")
             visualization_option = st.selectbox(
-                "Select Type of Visualization",
+                "Select Visualization Type",
                 ["Bar Chart", "Pie Chart"],
             )
 
             if visualization_option == "Bar Chart":
-                if "amount" in df.columns and "category" in df.columns:
-                    fig = px.bar(df, x="category", y="amount", title="Financial Data by Category")
+                if "position" in df.columns:
+                    position_counts = df["position"].value_counts().reset_index()
+                    position_counts.columns = ["Position", "Count"]
+                    fig = px.bar(position_counts, x="Position", y="Count", title="Personal Distribution by Position")
                     st.plotly_chart(fig)
                 else:
-                    st.warning("Verilerde 'category' veya 'amount' sütunu bulunamadı.")
+                    st.warning("Verilerde 'position' sütunu bulunamadı.")
 
             elif visualization_option == "Pie Chart":
-                if "amount" in df.columns and "category" in df.columns:
-                    fig = px.pie(df, values="amount", names="category", title="Financial Data by Category")
+                if "position" in df.columns:
+                    position_counts = df["position"].value_counts().reset_index()
+                    position_counts.columns = ["Position", "Count"]
+                    fig = px.pie(position_counts, values="Count", names="Position", title="Personal Distribution by Position")
                     st.plotly_chart(fig)
                 else:
-                    st.warning("Verilerde 'category' veya 'amount' sütunu bulunamadı.")
+                    st.warning("Verilerde 'position' sütunu bulunamadı.")
 
             # PDF Olarak İndirme Butonu
             if st.button("Download Data as PDF"):
-                filename = "finance_data.pdf"
+                filename = "personals_data.pdf"
                 save_dataframe_as_pdf(df, filename)
                 with open(filename, "rb") as file:
                     btn = st.download_button(
@@ -130,9 +132,9 @@ def show_finance():
                         mime="application/octet-stream"
                     )
         else:
-            st.warning("Finance verisi bulunamadı veya boş bir liste döndü.")
+            st.warning("Personals verisi bulunamadı veya boş bir liste döndü.")
     else:
-        st.error(f"Finance verileri alınamadı: {response.status_code} - {response.text}")
+        st.error(f"Personals verileri alınamadı: {response.status_code} - {response.text}")
 
     # Dashboard'a geri dön butonu
     if st.button("🔙 Back to Dashboard"):

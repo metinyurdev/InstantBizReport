@@ -1,2 +1,0 @@
-# InstantBizReport
-Proje Geliştirme Ortamı

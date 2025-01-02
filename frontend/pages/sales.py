@@ -1,5 +1,3 @@
-Özge-sales.py
-
 import streamlit as st
 import requests
 import pandas as pd
@@ -138,4 +136,3 @@ def show_sales():
     if st.button("🔙 Back to Dashboard"):
         st.session_state.current_page = "dashboard"
         st.rerun()
-

@@ -1,0 +1,3 @@
+pip install pytest fastapi sqlalchemy pymysql
+pip install python-dotenv
+pip install pytest-html

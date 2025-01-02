@@ -120,4 +120,3 @@ def show_dashboard():
     # Logout butonunu ekle
     if st.button("🚪 Logout", key="logout", help="Çıkış yap"):
         logout()
-
