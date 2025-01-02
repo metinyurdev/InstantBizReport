@@ -3,7 +3,7 @@ import requests
 from PIL import Image
 
 # API URL'si
-API_URL = "http://localhost"  # Backend'inizin çalıştığı URL'i buraya yazın
+API_URL = "http://127.0.0.1:8000"  # Backend'inizin çalıştığı URL'i buraya yazın
 
 # Özel CSS ekleme
 def inject_custom_css():
